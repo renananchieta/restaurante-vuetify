@@ -41,13 +41,10 @@
                         cols="12"
                         md="6"
                       >
-                        <v-autocomplete
-                          v-model="editedItem.produtoId"
-                          label="Produto"
+                        <v-text-field
+                          v-model="editedItem.nome"
+                          label="Nome"
                           :loading="loadingProdutos"
-                          :items="produtosCombo"
-                          item-title="produto"
-                          item-value="id"
                         />
                       </v-col>
                       <v-col
@@ -55,20 +52,30 @@
                         md="6"
                       >
                         <v-text-field
-                          v-model="editedItem.valor"
-                          label="Valor (R$)"
-                          type="number"
+                          v-model="editedItem.telefone"
+                          label="Telefone"
+                          placeholder="(91)00000-0000"
                         />
                       </v-col>
                     </v-row>
                     <v-row>
                       <v-col 
                        cols="12" 
-                       md="12"
+                       md="6"
                       >
-                        <v-textarea 
-                         v-model="editedItem.descricao"
-                         label="Descrição"
+                        <v-text-field 
+                         v-model="editedItem.identificacao"
+                         label="Identificação"
+                        />
+                      </v-col>
+                      <v-col 
+                       cols="12" 
+                       md="6"
+                      >
+                        <v-text-field 
+                         v-model="editedItem.saldo"
+                         label="Saldo (R$)"
+                         type="number"
                         />
                       </v-col>
                     </v-row>
@@ -172,14 +179,16 @@ const dialog = ref(false);
 const dialogDelete = ref(false);
 const editedIndex = ref(-1);
 const editedItem = ref({
-  produtoId: null,
-  valor: null,
-  descricao: '',
+  nome: '',
+  telefone: '',
+  identificacao: null,
+  saldo: null,
 });
 const defaultItem = ref({
-  produtoId: '',
-  valor: null,
-  descricao: '',
+  nome: '',
+  telefone: null,
+  identificacao: null,
+  saldo: null,
 });
 const loadingProdutos = ref(false);
 const produtosCombo = ref([]);
@@ -232,26 +241,5 @@ const deleteItemConfirm = () => {
   emit('deletar', itemASerDeletado);
   closeDelete();
 };
-
-const getProdutos = () => {
-  loadingProdutos.value = true;
-    api.get('/restaurante/produtos')
-    .then((response: any) => {
-      produtosCombo.value = response.data;
-    })
-    .catch((error: any) => {
-        console.log(error.data);
-    })
-    .finally(() => {
-        loadingProdutos.value = false;
-    })
-};
-
-/**
- * Hooks
- */
-onMounted(() => {
-  getProdutos();
-})
 
 </script>

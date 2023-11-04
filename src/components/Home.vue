@@ -101,7 +101,7 @@ const irParaPage = (v: string) => {
     router.push('/cardapio');
       break;
     case 'clientes':
-      console.log('clientes');
+      router.push('/cliente');
       break;
     case 'pedidos':
       console.log('pedidos');

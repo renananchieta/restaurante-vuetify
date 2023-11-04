@@ -26,6 +26,11 @@ const routes = [
         name: 'Cardapio',
         component: () => import('@/views/Cardapio.vue'),
       },
+      {
+        path: 'cliente',
+        name: 'Cliente',
+        component: () => import('@/views/Cliente.vue'),
+      },
     ],
   },
 ]

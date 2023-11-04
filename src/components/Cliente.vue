@@ -2,8 +2,8 @@
     <v-container>
         <v-card class="mb-4">
             <Pesquisar 
-            titulo="Cardapio"
-            subtitulo="Pesquisar itens no Cardapio"
+            titulo="Cliente"
+            subtitulo="Pesquisar Cliente"
             @pesquisar="pesquisar"
             >
                 <v-row>
@@ -12,12 +12,12 @@
                     md="12"
                     >
                         <v-autocomplete
-                        v-model="cardapio"
+                        v-model="cliente"
                         :items="dados"
-                        item-title="produtoDesc"
-                        item-value="produtoId"
+                        item-title="nome"
+                        item-value="id"
                         append-inner-icon="mdi-file-search-outline"
-                        label="item do Cardápio"
+                        label="Cliente"
                         variant="outlined"
                         density="compact"
                         :loading="loadingPesquisa"
@@ -25,9 +25,9 @@
                     </v-col>
                 </v-row>
             </Pesquisar>
-        </v-card>    
+        </v-card>
         <v-card>
-            <TabelaCardapio 
+            <TabelaCliente
             :headers="headers"
             :items="dados"
             :title="componentTitle"
@@ -35,35 +35,33 @@
             @salvar="ajaxNovo"
             @deletar="ajaxDeletar"
             />
-        </v-card>
+        </v-card>    
     </v-container>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import Pesquisar from '@/components/Search/Pesquisar.vue';
 import api from '@/plugins/api';
-import { ref } from 'vue';
-import TabelaCardapio from './Tables/TabelaCardapio.vue';
 import { onMounted } from 'vue';
+import { ref } from 'vue';
+import TabelaCliente from './Tables/TabelaCliente.vue';
 import { AxiosError, AxiosResponse } from 'axios';
 
 /**
  * Data
  */
-const componentTitle = ref('Cardapio');
-const loadingPesquisa = ref(false);
-const loadingTable = ref(false);
-const cardapio = ref(null);
-const dados = ref([]);
-const produtosCombo = ref([]);
-const headers = ([
-    {title: 'Categoria', key: 'categoria'},
-    {title: 'Produto', key: 'produtoDesc'},
-    {title: 'Valor', key: 'valorShow'},
-    {title: 'Detalhes', key: 'descricao'},
-    {title: 'Ações', align: 'end', key: 'actions'}
-]);
-const categoriaDesc = ref([]);
+ const loadingPesquisa = ref(false);
+ const loadingTable = ref(false);
+ const cliente = ref(null);
+ const dados = ref([]);
+ const headers = ([
+    {title: 'Nome', key: 'nome'},
+    {title: 'Telefone', key: 'telefone'},
+    {title: 'Identificação', key: 'identificacao'},
+    {title: 'Saldo (R$)', key: 'saldoShow'},
+    {title: 'Ações', key: 'actions'},
+ ]);
+ const componentTitle = ref('Clientes');
 
 /**
  * Methods
@@ -71,9 +69,9 @@ const categoriaDesc = ref([]);
  const pesquisar = () => {
     loadingPesquisa.value = true;
     loadingTable.value = true;
-    api.get('/restaurante/cardapio', {
+    api.get('/restaurante/clientes', {
         params: {
-            cardapio: cardapio.value
+            cliente: cliente.value
         }
     })
     .then((response: any) => {
@@ -94,7 +92,7 @@ const ajaxNovo = (item: AxiosResponse) => {
   if (item.id) {
     ajaxEditar(item);
   } else {
-    api.post('/restaurante/cardapio', item)
+    api.post('/restaurante/clientes', item)
       .then((response: AxiosResponse) => {
         dados.value.push(response.data);
       })
@@ -104,11 +102,11 @@ const ajaxNovo = (item: AxiosResponse) => {
         loadingTable.value = false;
     });
   }
-}
+};
 
 const ajaxEditar = (item: AxiosResponse) => {
     loadingTable.value = true;
-  api.put(`/restaurante/cardapio/${item.id}`, item)
+  api.put(`/restaurante/clientes/${item.id}`, item)
     .then((response: AxiosResponse) => {
       dados.value = dados.value.map((dado: any) => {
         if (dado.id === item.id) {
@@ -127,7 +125,7 @@ const ajaxEditar = (item: AxiosResponse) => {
 
 const ajaxDeletar = (item: AxiosResponse) => {
     loadingTable.value = true;
-  api.delete(`/restaurante/cardapio/${item.id}`)
+  api.delete(`/restaurante/clientes/${item.id}`)
     .then(() => {
       dados.value.splice(dados.value.indexOf(item), 1);
     })
@@ -144,7 +142,5 @@ const ajaxDeletar = (item: AxiosResponse) => {
  */
 onMounted(() => {
     pesquisar();
-    // getProdutos();
 })
-
 </script>
