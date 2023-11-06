@@ -79,7 +79,7 @@
                         />
                       </v-col>
                     </v-row>
-                </v-form>
+                  </v-form>
                 </v-container>
               </v-card-text>
   
@@ -130,9 +130,73 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+          <v-dialog 
+            v-model="dialogTransfer"
+            max-width="750px"
+          >
+            <v-card>
+              <v-card-title class="text-h5">
+                Tranferência de crédito
+              </v-card-title>
+              <v-card-text>
+                <v-container>
+                  <v-form>
+                    <v-row>
+                      <v-col cols="12" md="6">
+                        <v-text-field
+                          v-model="form.identificacaoOrigem"
+                          label="Identificação de Origem"
+                        />
+                      </v-col>
+                      <v-col cols="12" md="6">
+                        <v-text-field
+                          v-model="form.identificacaoDestino"
+                          label="Identificação de Destino"
+                        />
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="12" md="6">
+                        <v-text-field
+                          v-model="form.valor"
+                          label="Valor (R$)"
+                        />
+                      </v-col>
+                    </v-row>
+                    <v-card-actions>
+                      <v-spacer/>
+                      <v-btn
+                        color="blue-darken-1"
+                        variant="text"
+                        @click="setTrasferencia"
+                      >
+                        Transferir
+                      </v-btn>
+                    </v-card-actions>
+                  </v-form>
+                </v-container>
+              </v-card-text>
+            </v-card>
+          </v-dialog>
         </v-toolbar>
       </template>
       <template v-slot:item.actions="{ item }">
+        <v-icon
+          class="me-2"
+          color="teal-lighten-2"
+          size="small"
+          @click="extratoItem(item)"
+        >
+          mdi mdi-cash-fast
+        </v-icon>
+        <v-icon
+          class="me-2"
+          color="blue-lighten-1"
+          size="small"
+          @click="transferItem(item)"
+        >
+          mdi mdi-transfer
+        </v-icon>
         <v-icon
           class="me-2"
           color="purple-lighten-2"
@@ -154,6 +218,7 @@
 
 <script lang="ts" setup>
 import api from "@/plugins/api";
+import router from "@/router";
 import { onMounted } from "vue";
 import {computed, nextTick, ref, watch} from "vue";
 
@@ -191,7 +256,12 @@ const defaultItem = ref({
   saldo: null,
 });
 const loadingProdutos = ref(false);
-const produtosCombo = ref([]);
+const dialogTransfer = ref(false);
+const form = ref({
+  identificacaoOrigem: 0,
+  identificacaoDestino: 0,
+  valor: 0
+});
 
 const formTitle = computed(() => editedIndex.value === -1 ? 'Novo' : 'Edição');
 
@@ -202,11 +272,25 @@ watch(() => dialog, (val) => {
     return val || close();
 });
 
-const emit = defineEmits(['salvar', 'editar', 'deletar']);
+const emit = defineEmits(['salvar', 'editar', 'deletar', 'transferencia']);
 const setSalvar = () => {
   emit('salvar', editedItem.value);
   close();
 };
+
+const extratoItem = (item: any) => {
+  return router.push(`/extrato/cliente/${item.id}`);
+}
+
+const transferItem = (item: any) => {
+  dialogTransfer.value = true;
+  form.value.identificacaoOrigem = item.identificacao;
+};
+
+const setTrasferencia = () => {
+  emit('transferencia', form.value);
+  console.log(form.value);
+}
 
 const editItem = (item: any) => {
   emit('editar', item);

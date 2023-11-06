@@ -105,7 +105,7 @@ const ajaxNovo = (item: AxiosResponse) => {
 };
 
 const ajaxEditar = (item: AxiosResponse) => {
-    loadingTable.value = true;
+  loadingTable.value = true;
   api.put(`/restaurante/clientes/${item.id}`, item)
     .then((response: AxiosResponse) => {
       dados.value = dados.value.map((dado: any) => {

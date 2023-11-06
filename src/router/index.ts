@@ -31,6 +31,16 @@ const routes = [
         name: 'Cliente',
         component: () => import('@/views/Cliente.vue'),
       },
+      {
+        path: 'pedido',
+        name: 'Pedido',
+        component: () => import('@/views/Pedido.vue'),
+      },
+      {
+        path: 'extrato/cliente/:id',
+        name: 'ExtratoCliente',
+        component: () => import('@/views/Extrato.vue'),
+      },
     ],
   },
 ]
